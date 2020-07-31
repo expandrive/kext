@@ -333,6 +333,7 @@ struct fuse_kludge_thread_10
  *     10.12             136
  *     10.14             168
  *     10.15             176
+ *     10.16             168
  */
 
 #ifdef __LP64__
@@ -377,6 +378,13 @@ struct fuse_kludge_thread_19
     uint32_t sched_flags;
 } __attribute__ ((packed));
 
+struct fuse_kludge_thread_20
+{
+    char dummy[168];
+    uint32_t sched_flags;
+} __attribute__ ((packed));
+
+
 /*
  * offsetof(thread_t, sched_flags)
  *
@@ -387,6 +395,7 @@ struct fuse_kludge_thread_19
  *     10.12             272
  *     10.14             304
  *     10.15             312
+ *     10.16             304
  */
 
 #ifdef __LP64__
@@ -431,6 +440,12 @@ struct fuse_kludge_thread_debug_19
     uint32_t sched_flags;
 } __attribute__ ((packed));
 
+struct fuse_kludge_thread_debug_20
+{
+    char dummy[304];
+    uint32_t sched_flags;
+} __attribute__ ((packed));
+
 /*
  * offsetof(thread_t, sched_flags)
  *
@@ -439,6 +454,7 @@ struct fuse_kludge_thread_debug_19
  *     10.12             144
  *     10.14             176
  *     10.15             184
+ *     10.16             176
  */
 
 struct fuse_kludge_thread_development_14
@@ -465,6 +481,13 @@ struct fuse_kludge_thread_development_19
     uint32_t sched_flags;
 } __attribute__ ((packed));
 
+struct fuse_kludge_thread_development_20
+{
+    char dummy[176];
+    uint32_t sched_flags;
+} __attribute__ ((packed));
+
+
 /*
  * Constants from osfmk/kern/thread.h
  */
@@ -480,7 +503,9 @@ fuse_kludge_thread_should_abort(thread_t th)
 
     switch (fuse_kludge_kernel) {
         case FUSE_KLUDGE_KERNEL_RELEASE:
-            if (version_major >= 19) {
+            if (version_major >= 20) {
+                sched_flags = ((struct fuse_kludge_thread_20 *)th)->sched_flags;
+            } else if (version_major >= 19) {
                 sched_flags = ((struct fuse_kludge_thread_19 *)th)->sched_flags;
             } else if (version_major >= 18) {
                 sched_flags = ((struct fuse_kludge_thread_18 *)th)->sched_flags;
@@ -498,7 +523,9 @@ fuse_kludge_thread_should_abort(thread_t th)
             break;
 
         case FUSE_KLUDGE_KERNEL_DEBUG:
-            if (version_major >= 19) {
+            if (version_major >= 20) {
+                sched_flags = ((struct fuse_kludge_thread_debug_20 *)th)->sched_flags;
+            } else if (version_major >= 19) {
                 sched_flags = ((struct fuse_kludge_thread_debug_19 *)th)->sched_flags;
             } else if (version_major >= 18) {
                 sched_flags = ((struct fuse_kludge_thread_debug_18 *)th)->sched_flags;
@@ -512,7 +539,9 @@ fuse_kludge_thread_should_abort(thread_t th)
             break;
 
         case FUSE_KLUDGE_KERNEL_DEVELOPMENT:
-            if (version_major >= 19) {
+            if (version_major >= 20) {
+                sched_flags = ((struct fuse_kludge_thread_development_20 *)th)->sched_flags;
+            } else if (version_major >= 19) {
                 sched_flags = ((struct fuse_kludge_thread_development_19 *)th)->sched_flags;
             } else if (version_major >= 18) {
                 sched_flags = ((struct fuse_kludge_thread_development_18 *)th)->sched_flags;
